@@ -8,28 +8,23 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   const input = req.body;
   fetch(WIKIPEDIA_URL + input)
     .then((r) => {
+      //throw bad request if response is not OK:status
       if (!r.ok) {
         res.status(400);
         throw new Error(r.statusText);
       }
+      //else return the response as a json
       return r.json();
     })
     .then((article) => {
       validateData(article);
-      const text = article.parse.text["*"];
+      const articleText = article.parse.text["*"];
+      //find all global matches
       const inputPattern = new RegExp(input, "gi");
-      const matches = text.match(inputPattern);
+      const matches = articleText.match(inputPattern);
+      console.log(matches);
       res.status(200);
-      res.end(
-        JSON.stringify(
-          matches !== null
-            ? matches.length
-            : "The word is never used in the article"
-        )
-      );
-    })
-    .catch((e) => {
-      res.end(JSON.stringify(e.message));
+      res.end(JSON.stringify(matches.length));
     });
 };
 const validateData = (data: any) => {

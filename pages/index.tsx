@@ -1,20 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import Output from "../components/OutputHandler/Output";
-import Input from "../components/InputHandler/InputHandler";
+import Counter from "../components/Counter/Counter";
+import SearchBox from "../components/SearchBox/SearchBox";
 
-export default function Home() {
-  const [searchWord, setSearchWord] = useState<string>("");
+import styles from "./index.module.css";
+
+const Home = () => {
+  const [input, setInput] = useState<string>("");
   const [result, setResult] = useState<number>(0);
-  const isFirstRun = useRef(true);
 
   const handleSearch = () => {
-    fetch("/api/topic", {
+    fetch("/api/findTopic", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(searchWord),
+      body: JSON.stringify(input),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -30,21 +31,19 @@ export default function Home() {
     if (typeof data === "string") throw new Error(data);
   };
   useEffect(() => {
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      return;
-    }
     handleSearch();
-  }, [searchWord]);
+  }, [input]);
 
   const handleSearchInput = (input: string) => {
-    setSearchWord(input);
+    setInput(input);
   };
 
   return (
-    <div>
-      <Output rate={result} />
-      <Input handleSearch={handleSearchInput} />
+    <div className={styles.container}>
+      <Counter rate={result} />
+      <SearchBox handleSearch={handleSearchInput} />
     </div>
   );
-}
+};
+
+export default Home;
