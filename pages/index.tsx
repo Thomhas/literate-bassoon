@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 
 import Counter from "../components/Counter/Counter";
@@ -12,14 +11,12 @@ const Home = () => {
 
   const handleSearch = () => {
     fetch("/api/findTopic", {
-
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
 
       body: JSON.stringify(input),
-
     })
       .then((response) => response.json())
       .then((data) => {
@@ -35,7 +32,6 @@ const Home = () => {
     if (typeof data === "string") throw new Error(data);
   };
   useEffect(() => {
-
     handleSearch();
   }, [input]);
 
